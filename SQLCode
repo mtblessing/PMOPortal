@@ -1,11 +1,9 @@
 -- Database Creation
-CREATE DATABASE PMOPortal;
+CREATE DATABASE IF NOT EXISTS PMOPortal;
 USE PMOPortal;
 
--- Create Tables based on the PDF document
-
 -- AdminUsers Table
-CREATE TABLE AdminUsers (
+CREATE TABLE IF NOT EXISTS AdminUsers (
     AdminUserId INT PRIMARY KEY AUTO_INCREMENT,
     Name VARCHAR(100) NOT NULL,
     Email VARCHAR(100) NOT NULL,
@@ -17,9 +15,9 @@ CREATE TABLE AdminUsers (
 );
 
 -- Client Table
-CREATE TABLE Client (
+CREATE TABLE IF NOT EXISTS Client (
     ClientId INT PRIMARY KEY AUTO_INCREMENT,
-    Client VARCHAR(200) NOT NULL,
+    ClientName VARCHAR(200) NOT NULL,
     ClientShortCode VARCHAR(20) NOT NULL,
     AccountManager VARCHAR(100) NULL,
     ExecSponsor VARCHAR(100) NULL,
@@ -30,143 +28,153 @@ CREATE TABLE Client (
     UpdatedBy VARCHAR(100) NULL
 );
 
+-- ProjectAttributes Table
+CREATE TABLE IF NOT EXISTS ProjectAttributes (
+    ProjectAttrId INT PRIMARY KEY AUTO_INCREMENT,
+    AUR_WBS VARCHAR(50),
+    SSE_Project_No VARCHAR(50),
+    GSP_Region VARCHAR(50),
+    Postcode VARCHAR(10),
+    Project_Stage VARCHAR(50),
+    Project_Awarded DATE,
+    Project_Status VARCHAR(50),
+    Project_Title VARCHAR(255),
+    AUR_Planner VARCHAR(100),
+    AUR_SPM VARCHAR(100),
+    AUR_PM VARCHAR(100),
+    AUR_Design VARCHAR(100),
+    AUR_Appointed_Designer VARCHAR(100),
+    AUR_SQS VARCHAR(100),
+    AUR_QS VARCHAR(100),
+    Designer VARCHAR(100),
+    SPM VARCHAR(100),
+    Project_Manager VARCHAR(100),
+    Contract_Manager VARCHAR(100)
+);
+
 -- CommercialVehicle Table
-CREATE TABLE CommercialVehicle (
+CREATE TABLE IF NOT EXISTS CommercialVehicle (
     CommercialVehicleId INT PRIMARY KEY AUTO_INCREMENT,
     CommercialVehicleName VARCHAR(100) NOT NULL
 );
 
 -- Contract Table - Central entity
-CREATE TABLE Contract (
+CREATE TABLE IF NOT EXISTS Contract (
     ContractId INT PRIMARY KEY AUTO_INCREMENT,
     ClientId INT NOT NULL,
     Name VARCHAR(200) NOT NULL,
-    ContractShortCode VARCHAR(20) NOT NULL,
-    ContractValue DECIMAL(18, 2) NULL,
-    ScrumMaster VARCHAR(100) NULL,
-    PM VARCHAR(100) NULL,
-    SPM VARCHAR(100) NULL,
-    QS VARCHAR(100) NULL,
-    SQS VARCHAR(100) NULL,
-    RAG_Commercial VARCHAR(10) NULL,
-    RAG_Budget VARCHAR(10) NULL,
-    RAG_Time VARCHAR(10) NULL,
-    RAG_Resource VARCHAR(10) NULL,
-    RAG_Risk VARCHAR(10) NULL,
-    RAG_Overall VARCHAR(10) NULL,
-    RAG_Notes TEXT NULL,
-    RAG_Invoicing VARCHAR(10) NULL,
-    RAG_Action VARCHAR(100) NULL,
-    ProfessionalServicesSpend_ABI DECIMAL(18, 2) NULL,
+    AUR_WBS VARCHAR(50),
+    SSE_Project_No VARCHAR(50),
+    ContractValue DECIMAL(18, 2),
+    ScrumMaster VARCHAR(100),
+    PM VARCHAR(100),
+    SPM VARCHAR(100),
+    QS VARCHAR(100),
+    SQS VARCHAR(100),
+    RAG_Commercial VARCHAR(10),
+    RAG_Budget VARCHAR(10),
+    RAG_Time VARCHAR(10),
+    RAG_Resource VARCHAR(10),
+    RAG_Risk VARCHAR(10),
+    RAG_Overall VARCHAR(10),
+    RAG_Notes TEXT,
+    RAG_Invoicing VARCHAR(10),
+    RAG_Action VARCHAR(100),
+    ProfessionalServicesSpend_ABI DECIMAL(18, 2),
     Active BIT NOT NULL DEFAULT 1,
     CreatedDate DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     CreatedBy VARCHAR(100) NOT NULL,
     UpdatedDate DATETIME NULL,
-    UpdatedBy VARCHAR(100) NULL,
-    PMEmail VARCHAR(100) NULL,
-    ScrumMasterADProfileID VARCHAR(100) NULL,
+    UpdatedBy VARCHAR(100),
+    PMEmail VARCHAR(100),
+    ScrumMasterADProfileID VARCHAR(100),
     FOREIGN KEY (ClientId) REFERENCES Client(ClientId)
 );
 
 -- Commercial Table
-CREATE TABLE Commercial (
+CREATE TABLE IF NOT EXISTS Commercial (
     CommercialId INT PRIMARY KEY AUTO_INCREMENT,
     ContractId INT NOT NULL,
+    AUR_WBS VARCHAR(50),
+    SSE_Project_No VARCHAR(50),
     CommercialVehicleId INT NOT NULL,
-    Reference VARCHAR(100) NULL,
-    ProfessionalServicesBudget DECIMAL(18, 2) NULL,
-    ExpenseProvision DECIMAL(18, 2) NULL,
-    ExpenseScenario VARCHAR(100) NULL,
-    Signed BIT NULL,
-    Notes TEXT NULL,
+    Reference VARCHAR(100),
+    ProfessionalServicesBudget DECIMAL(18, 2),
+    ExpenseProvision DECIMAL(18, 2),
+    ExpenseScenario VARCHAR(100),
+    Signed BIT,
+    Notes TEXT,
     Active BIT NOT NULL DEFAULT 1,
     CreatedDate DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     CreatedBy VARCHAR(100) NOT NULL,
-    UpdatedDate DATETIME NULL,
-    UpdatedBy VARCHAR(100) NULL,
+    UpdatedDate DATETIME,
+    UpdatedBy VARCHAR(100),
     FOREIGN KEY (ContractId) REFERENCES Contract(ContractId),
     FOREIGN KEY (CommercialVehicleId) REFERENCES CommercialVehicle(CommercialVehicleId)
 );
 
--- PurchaseOrder Table
-CREATE TABLE PurchaseOrder (
-    PurchaseOrderId INT PRIMARY KEY AUTO_INCREMENT,
-    CommercialId INT NOT NULL,
-    PONumber VARCHAR(50) NOT NULL,
-    POAmount DECIMAL(18, 2) NOT NULL,
-    Notes TEXT NULL,
-    Active BIT NOT NULL DEFAULT 1,
-    CreatedDate DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    CreatedBy VARCHAR(100) NOT NULL,
-    UpdatedDate DATETIME NULL,
-    UpdatedBy VARCHAR(100) NULL,
-    FOREIGN KEY (CommercialId) REFERENCES Commercial(CommercialId)
-);
-
--- DaysOut Table (formerly DateOut in the diagram)
-CREATE TABLE DaysOut (
-    DaysOutId INT PRIMARY KEY AUTO_INCREMENT,
-    ContractId INT NOT NULL,
-    Consultant VARCHAR(100) NOT NULL,
-    StartDate DATE NOT NULL,
-    EndDate DATE NULL,
-    IsHalfDay BIT NULL DEFAULT 0,
-    ConsultantEmail VARCHAR(100) NULL,
-    ConsultantADProfileID VARCHAR(100) NULL,
-    FOREIGN KEY (ContractId) REFERENCES Contract(ContractId)
-);
-
 -- Risk Table
-CREATE TABLE Risk (
+CREATE TABLE IF NOT EXISTS Risk (
     RiskId INT PRIMARY KEY AUTO_INCREMENT,
     ContractId INT NOT NULL,
-    Impact VARCHAR(50) NULL,
-    Owner VARCHAR(100) NULL,
-    RiskLevel VARCHAR(20) NULL,
-    Story TEXT NULL,
-    SubjectArea VARCHAR(100) NULL,
-    BlockingDetails TEXT NULL,
-    DateRaised DATE NULL,
-    Comments TEXT NULL,
-    ContractRiskID VARCHAR(50) NULL,
-    Status VARCHAR(50) NULL,
-    DateLastUpdated DATE NULL,
+    Impact VARCHAR(50),
+    Owner VARCHAR(100),
+    RiskLevel VARCHAR(20),
+    Story TEXT,
+    SubjectArea VARCHAR(100),
+    BlockingDetails TEXT,
+    DateRaised DATE,
+    Comments TEXT,
+    ContractRiskID VARCHAR(50),
+    Status VARCHAR(50),
+    DateLastUpdated DATE,
     Active BIT NOT NULL DEFAULT 1,
-    LastUpdatedBy VARCHAR(100) NULL,
-    Item VARCHAR(100) NULL,
+    LastUpdatedBy VARCHAR(100),
+    Item VARCHAR(100),
     FOREIGN KEY (ContractId) REFERENCES Contract(ContractId)
 );
 
 -- Assumption Table
-CREATE TABLE Assumption (
+CREATE TABLE IF NOT EXISTS Assumption (
     AssumptionId INT PRIMARY KEY AUTO_INCREMENT,
     ContractId INT NOT NULL,
     Assumption TEXT NOT NULL,
-    DateRaised DATE NULL,
-    Status VARCHAR(50) NULL,
+    DateRaised DATE,
+    Status VARCHAR(50),
     Active BIT NOT NULL DEFAULT 1,
-    AssumptionBasis TEXT NULL,
+    AssumptionBasis TEXT,
     FOREIGN KEY (ContractId) REFERENCES Contract(ContractId)
 );
 
 -- Tasks Table
-CREATE TABLE Tasks (
+CREATE TABLE IF NOT EXISTS Tasks (
     TaskId INT PRIMARY KEY AUTO_INCREMENT,
     ContractId INT NOT NULL,
-    WeekToggle VARCHAR(20) NULL,
+    WeekToggle VARCHAR(20),
     Task TEXT NOT NULL,
     FOREIGN KEY (ContractId) REFERENCES Contract(ContractId)
 );
 
--- Engagement Table
-CREATE TABLE Engagement (
-    EngagementId INT PRIMARY KEY AUTO_INCREMENT,
-    ContractId INT NOT NULL,
-    EngagementName VARCHAR(200) NOT NULL,
+-- Missing tables (stubs so indexes don't fail)
+CREATE TABLE IF NOT EXISTS PurchaseOrder (
+    PurchaseOrderId INT PRIMARY KEY AUTO_INCREMENT,
+    CommercialId INT,
+    FOREIGN KEY (CommercialId) REFERENCES Commercial(CommercialId)
+);
+
+CREATE TABLE IF NOT EXISTS DaysOut (
+    DaysOutId INT PRIMARY KEY AUTO_INCREMENT,
+    ContractId INT,
     FOREIGN KEY (ContractId) REFERENCES Contract(ContractId)
 );
 
--- Create Indexes for better performance
+CREATE TABLE IF NOT EXISTS Engagement (
+    EngagementId INT PRIMARY KEY AUTO_INCREMENT,
+    ContractId INT,
+    FOREIGN KEY (ContractId) REFERENCES Contract(ContractId)
+);
+
+-- Create Indexes
 CREATE INDEX IX_Contract_ClientId ON Contract(ClientId);
 CREATE INDEX IX_Commercial_ContractId ON Commercial(ContractId);
 CREATE INDEX IX_Commercial_VehicleId ON Commercial(CommercialVehicleId);
@@ -177,94 +185,7 @@ CREATE INDEX IX_Assumption_ContractId ON Assumption(ContractId);
 CREATE INDEX IX_Tasks_ContractId ON Tasks(ContractId);
 CREATE INDEX IX_Engagement_ContractId ON Engagement(ContractId);
 
--- Add some sample data
-
--- Insert sample clients
-INSERT INTO Client (Client, ClientShortCode, AccountManager, ExecSponsor, Active, CreatedBy)
-VALUES 
-('Acme Corporation', 'ACME', 'John Manager', 'Sarah Executive', 1, 'System'),
-('Globex Industries', 'GLBX', 'Mary Handler', 'James Director', 1, 'System'),
-('Initech Systems', 'INIT', 'Robert Admin', 'Patricia Chief', 1, 'System');
-
--- Insert sample commercial vehicles
-INSERT INTO CommercialVehicle (CommercialVehicleName)
-VALUES 
-('Fixed Price'),
-('Time & Materials'),
-('Managed Service'),
-('Retainer');
-
--- Insert sample contracts
-INSERT INTO Contract (ClientId, Name, ContractShortCode, ContractValue, InvestmentBudget, 
-                     ScrumMaster, RAG_Overall, Active, CreatedBy)
-VALUES 
-(1, 'Acme Digital Transformation', 'ACME-DT', 450000.00, 50000.00, 'David Leader', 'Green', 1, 'System'),
-(2, 'Globex ERP Implementation', 'GLBX-ERP', 780000.00, 100000.00, 'Lisa Manager', 'Amber', 1, 'System'),
-(3, 'Initech Security Audit', 'INIT-SEC', 175000.00, 25000.00, 'Mark Expert', 'Green', 1, 'System');
-
--- Insert sample commercial entries
-INSERT INTO Commercial (ContractId, CommercialVehicleId, Reference, ProfessionalServicesBudget, 
-                       ExpenseProvision, Signed, Active, CreatedBy)
-VALUES 
-(1, 1, 'COM-2023-001', 400000.00, 50000.00, 1, 1, 'System'),
-(2, 2, 'COM-2023-002', 700000.00, 80000.00, 1, 1, 'System'),
-(3, 3, 'COM-2023-003', 160000.00, 15000.00, 1, 1, 'System');
-
--- Insert sample purchase orders
-INSERT INTO PurchaseOrder (CommercialId, PONumber, POAmount, Active, CreatedBy)
-VALUES 
-(1, 'PO-ACME-001', 200000.00, 1, 'System'),
-(1, 'PO-ACME-002', 250000.00, 1, 'System'),
-(2, 'PO-GLBX-001', 780000.00, 1, 'System'),
-(3, 'PO-INIT-001', 175000.00, 1, 'System');
-
--- Insert sample risks
-INSERT INTO Risk (ContractId, Impact, Owner, RiskLevel, Story, SubjectArea, 
-                 DateRaised, Status, Active, Item)
-VALUES 
-(1, 'High', 'Project Manager', 'Red', 'Integration with legacy systems may fail', 'Technical', 
- CURRENT_DATE(), 'Open', 1, 'Risk-001'),
-(2, 'Medium', 'Technical Lead', 'Amber', 'Staff availability during holiday season', 'Resource', 
- CURRENT_DATE(), 'Mitigated', 1, 'Risk-002'),
-(3, 'Low', 'Security Specialist', 'Green', 'Firewall configuration delay', 'Infrastructure', 
- CURRENT_DATE(), 'Closed', 1, 'Risk-003');
-
--- Insert sample tasks
-INSERT INTO Tasks (ContractId, WeekToggle, Task)
-VALUES 
-(1, 'Week 1', 'Complete project kickoff'),
-(1, 'Week 1', 'Finalize requirements documentation'),
-(1, 'Week 2', 'Begin development phase'),
-(2, 'Week 1', 'ERP software installation'),
-(2, 'Week 2', 'Configuration of base modules'),
-(3, 'Week 1', 'Initial security scan');
-
--- Insert sample consultant days out
-INSERT INTO DaysOut (ContractId, Consultant, StartDate, EndDate, IsHalfDay)
-VALUES 
-(1, 'Alice Expert', '2023-01-15', '2023-02-28', 0),
-(1, 'Bob Developer', '2023-01-20', '2023-03-15', 0),
-(2, 'Charlie Specialist', '2023-02-01', '2023-04-30', 0),
-(2, 'Diana Analyst', '2023-02-15', '2023-03-15', 1),
-(3, 'Edward Security', '2023-03-01', '2023-03-14', 0);
-
--- Insert sample assumptions
-INSERT INTO Assumption (ContractId, Assumption, DateRaised, Status, Active)
-VALUES 
-(1, 'Client will provide access to all required systems within first week', '2023-01-10', 'Valid', 1),
-(1, 'Existing data quality is sufficient for migration', '2023-01-10', 'At Risk', 1),
-(2, 'Client staff will be available for training sessions', '2023-01-25', 'Valid', 1),
-(3, 'All servers are accessible remotely', '2023-02-20', 'Valid', 1);
-
--- Insert sample engagements
-INSERT INTO Engagement (ContractId, EngagementName)
-VALUES 
-(1, 'Digital Transformation Phase 1'),
-(1, 'Digital Transformation Phase 2'),
-(2, 'ERP Implementation'),
-(3, 'Security Audit Q1');
-
--- Add some admin users
+-- Sample Admin Users
 INSERT INTO AdminUsers (Name, Email, Active, CreatedBy)
 VALUES 
 ('Admin User', 'admin@pmo-portal.com', 1, 'System'),
